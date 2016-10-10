@@ -21,21 +21,27 @@ namespace Game15
     /// </summary>
     public partial class MainWindow : DXWindow
     {
-        private Game Game = new Game();
+        private Game Game;
         ControlPanel ControlPanel;
+        public int MaxSizeOfGame { get; } = 5;
+        public int MinSizeOfGame { get; } = 3;
         public MainWindow()
         {
             InitializeComponent();
-            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(3, GridUnitType.Star)});
-            Grid.SetColumn(grid1,0);
-            grid.ColumnDefinitions.Add(new ColumnDefinition());
-            Grid.SetColumn(grid2, 1);
+            Layout();           
             ControlPanel = new ControlPanel(this);
             CreateControlPanel();
         }
-        public void CreateGame(int size)
+        void Layout()
         {
-            Game.Create(size);
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(3, GridUnitType.Star) });
+            Grid.SetColumn(grid1, 0);
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            Grid.SetColumn(grid2, 1);
+        }
+        private void CreateGame(int size)
+        {
+            Game = new Game(size);
             for (int i = 0; i < size; i++)
             {
                 grid1.RowDefinitions.Add(new RowDefinition());
@@ -49,14 +55,8 @@ namespace Game15
             {
                 if (tile.Value != 0)
                 {
-                    Button button = new Button() { Content = tile.Value };
-
-                    button.Style = (Style)this.Resources["First"];
-                    button.Click += tile_Click;
-                    Grid.SetRow(button, (int)tile.Point.X);
-                    Grid.SetColumn(button, (int)tile.Point.Y);
-                    tile.View = button;
-                    grid1.Children.Add(button);
+                    tile.View = new ViewTile(tile_Click,(Style)this.Resources["First"],tile);
+                    grid1.Children.Add(tile.GetControl());
                 }
             }
         }
@@ -82,8 +82,7 @@ namespace Game15
             {
                 if (tile.Value != 0)
                 {
-                    Grid.SetRow((Button)tile.View, (int)tile.Point.X);
-                    Grid.SetColumn((Button)tile.View, (int)tile.Point.Y);
+                    tile.SetLocationView();
                 }
             }
         }
@@ -91,32 +90,30 @@ namespace Game15
         {
             if (Game.WhetherGameIsOver())
             {
-                Label label = (Label)ControlPanel.Controls.First(x => x.Name == "Wins");               
-                label.Content = "Wins:  " + ++Game.Wins;
+                Label label = (Label)ControlPanel.Controls.First(x => x.Name == "Wins");
+                int countWins = Int32.Parse(label.Content.ToString().Last().ToString());         
+                label.Content = "Wins:  " + ++countWins;
                 MessageBox.Show("Congratulations!)");
             }
         }
         public void NewGame(int size=0)
         {
-            int sizeOfGame = (size==0)?ControlPanel.minSizeOfGame:size;
-            if (Game.Tiles.Count != 0)
+            int sizeOfGame;
+            if (Game != null)
             {
                 sizeOfGame = (size == 0) ? Game.Size : size;
                 grid1.Children.Clear();
                 grid1.RowDefinitions.Clear();
                 grid1.ColumnDefinitions.Clear();
-                Game.DeleteData();
             }
+            else
+                sizeOfGame = (size == 0) ? MinSizeOfGame : size;
             CreateGame(sizeOfGame);
         }
         public void RollBackStep()
         {
             if(Game.RollBackStep())
                 MoveTiles();
-        }
-        public int GetWins()
-        {
-            return Game.Wins;
         }
     }
 }

@@ -14,8 +14,6 @@ namespace Game15
     {
         MainWindow Window;
         public List<Control> Controls { get; } = new List<Control>();
-        public int maxSizeOfGame { get; } = 5;
-        public int minSizeOfGame { get; } = 3;
         public ControlPanel(MainWindow window)
         {
             this.Window = window;
@@ -30,7 +28,7 @@ namespace Game15
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(0, 160, 0, 0)
             };
-            newgame.Click += newgame_Click;
+            newgame.Click += newGame_Click;
 
             Button rollbackStep = new Button()
             {
@@ -41,10 +39,10 @@ namespace Game15
                 Margin = new Thickness(0, 100, 0, 0)
             };
             rollbackStep.Click += rollbackStep_Click;
-            
+
             Label wins = new Label()
             {
-                Content = "Wins:  "+Window.GetWins(),
+                Content = "Wins:  0",
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Name = "Wins",
@@ -59,7 +57,7 @@ namespace Game15
                 Height = 5
             };
             kindsOfGames.SelectionChanged += kindsOfGames_SelectionChanged;
-            for (int i = minSizeOfGame; i <= maxSizeOfGame; i++)
+            for (int i = Window.MinSizeOfGame; i <= Window.MaxSizeOfGame; i++)
             {
                 ListBoxItem item = new ListBoxItem()
                 {
@@ -76,7 +74,7 @@ namespace Game15
             Controls.Add(kindsOfGames);
             return Controls;
         }
-        private void newgame_Click(object sender, RoutedEventArgs e)
+        private void newGame_Click(object sender, RoutedEventArgs e)
         {
             Window.NewGame();
         }

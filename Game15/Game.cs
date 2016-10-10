@@ -13,15 +13,9 @@ namespace Game15
     {
         public List<Tile> Tiles { get; } = new List<Tile>();
         public int Size { get; private set; }
-        private List<int> CorrectSequenceOfNumbers = new List<int>();
-        public List<int> History { get; } = new List<int>();
-        int wins = 0;
-        public int Wins
-        {
-            get { return wins; }
-            set { wins = value; }
-        }
-        public void Create(int size)
+        List<int> CorrectSequenceOfNumbers = new List<int>();
+        List<int> History { get; } = new List<int>();
+        public Game(int size)
         {
             this.Size = size;
             GenerateNumbers();
@@ -89,12 +83,6 @@ namespace Game15
                     return false;
             }
             return true;
-        }
-        public void DeleteData()
-        {
-            CorrectSequenceOfNumbers?.Clear();
-            Tiles?.Clear();
-            History?.Clear();
         }
         public bool RollBackStep()
         {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Game15
 {
@@ -11,7 +12,7 @@ namespace Game15
     {
         public Point Point = new Point();
         public int Value { get; set; }
-        public object View { get; set; }
+        public ViewTile View { get; set; }
         public Tile() { }
         public Tile(int x, int y, int value)
         {
@@ -30,6 +31,14 @@ namespace Game15
             var deltaY = Point.Y - other.Y;
             var distance = Math.Sqrt(Math.Pow(deltaX, 2) + Math.Pow(deltaY, 2));
             return (distance <= 1) ? true : false;
+        }
+        public void SetLocationView()
+        {
+            View.SetLocation();
+        }
+        public Control GetControl()
+        {
+            return View.Element;
         }
     }
 }
